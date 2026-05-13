@@ -1,0 +1,34 @@
+{
+  "_comment": "Ideal joint angles (degrees) per yoga pose. Add/update entries here after review.",
+  "warrior_one": {
+    "left_knee": 90,
+    "right_knee": 170,
+    "left_hip": 90,
+    "right_hip": 170,
+    "left_shoulder": 170,
+    "right_shoulder": 170
+  },
+  "warrior_two": {
+    "left_knee": 90,
+    "right_knee": 170,
+    "left_elbow": 170,
+    "right_elbow": 170,
+    "left_shoulder": 90,
+    "right_shoulder": 90
+  },
+  "tree_pose": {
+    "left_knee": 170,
+    "right_knee": 45,
+    "left_hip": 170,
+    "left_shoulder": 170,
+    "right_shoulder": 170
+  },
+  "downward_dog": {
+    "left_elbow": 170,
+    "right_elbow": 170,
+    "left_knee": 170,
+    "right_knee": 170,
+    "left_hip": 60,
+    "right_hip": 60
+  }
+}

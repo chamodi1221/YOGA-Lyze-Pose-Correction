@@ -1,0 +1,151 @@
+# Yoga Virtual Coach — Implementation Walkthrough
+
+## What Was Built
+
+A full real-time yoga pose coaching backend using **FastAPI + MoveNet Thunder TFLite**.
+
+---
+
+## Bugs Fixed
+
+| File | Bug | Fix |
+|---|---|---|
+| [movenet.py](file:///d:/Python_Projects/yoga-backend/app/services/movenet.py) | Wrong import path for `dataset_builder` | Changed to `app.services.dataset_builder` |
+| [movenet.py](file:///d:/Python_Projects/yoga-backend/app/services/movenet.py) | Stale `joint` var in body keypoints loop | Changed to [BodyPart(idx)](file:///d:/Python_Projects/yoga-backend/app/services/dataset_builder.py#24-43) |
+| [preprocess.py](file:///d:/Python_Projects/yoga-backend/scripts/preprocess.py) | Wrong import paths | Fixed to full package paths |
+| [preprocess.py](file:///d:/Python_Projects/yoga-backend/scripts/preprocess.py) | [detect()](file:///d:/Python_Projects/yoga-backend/app/services/preprocess.py#24-39) NameError — `detection` never initialised | Added proper initialisation + fallback |
+| [preprocess.py](file:///d:/Python_Projects/yoga-backend/scripts/preprocess.py) | Deprecated `np.str` | Replaced with [str](file:///d:/Python_Projects/yoga-backend/app/routers/pose.py#83-111) |
+| [preprocess.py](file:///d:/Python_Projects/yoga-backend/scripts/preprocess.py) | Top-level script code ran on every import | Wrapped in class/functions |
+| [trainer.py](file:///d:/Python_Projects/yoga-backend/app/services/trainer.py) | Class names inconsistent between train/test CSV | Derived from sorted unique values |
+
+---
+
+## New Files Created
+
+```
+scripts/
+  preprocess.py       ← CLI: extract keypoints from images → CSV
+  train.py            ← CLI: train classifier → .keras + class_names.json
+
+app/
+  data/
+    pose_references.json   ← ideal joint angles per pose class
+  schemas/
+    pose.py                ← Pydantic: KeypointSchema, PoseFrameResponse
+  services/
+    pose_service.py        ← MoveNet singleton (loads once at startup)
+    classifier_service.py  ← Keras classifier (lazy-loaded)
+    angle_service.py       ← Joint angle calc + coaching feedback
+  routers/
+    pose.py                ← POST /pose/classify  +  ws /pose/stream
+```
+
+---
+
+## Server Startup Verified ✅
+
+```
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+```
+
+MoveNet Thunder TFLite loaded and warmed up on startup with no errors.
+
+---
+
+## How to Use
+
+### Step 1 — Organise training data
+```
+datasets/images/
+  train/
+    warrior_one/    ← your training JPEG images here
+    tree_pose/
+  test/
+    warrior_one/    ← different images for testing
+    tree_pose/
+```
+
+### Step 2 — Extract keypoints
+```powershell
+python scripts/preprocess.py
+```
+Outputs: `train_data.csv`, `test_data.csv`
+
+### Step 3 — Train the classifier
+```powershell
+python scripts/train.py
+```
+Outputs: `exported_models/pose_classifier.keras`, `exported_models/class_names.json`
+
+### Step 4 — Start the server
+```powershell
+uv run uvicorn app.main:app --reload --port 8000
+```
+
+### Step 5 — Test REST endpoint
+```powershell
+curl -X POST http://localhost:8000/pose/classify -F "image=@your_pose.jpg"
+```
+
+### Step 6 — Connect frontend via WebSocket
+```
+ws://localhost:8000/pose/stream
+
+Client sends:  JPEG bytes
+Server replies: JSON PoseFrameResponse per frame
+```
+
+---
+
+## Frontend Integration Guide
+
+```js
+// 1. Connect
+const ws = new WebSocket('ws://localhost:8000/pose/stream');
+
+// 2. Capture & send frames at ~15-30fps
+function sendFrame() {
+  canvas.toBlob(blob => ws.send(blob), 'image/jpeg', 0.8);
+  requestAnimationFrame(sendFrame);
+}
+
+// 3. Draw overlay from server response
+ws.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+  drawSkeleton(data.keypoints);       // connect the 17 dots
+  showPoseBadge(data.pose_class, data.confidence);
+  showFeedback(data.feedback);        // e.g. "Bend left knee 22° more"
+};
+```
+
+### Sample JSON Response
+```json
+{
+  "keypoints": [
+    { "body_part": "LEFT_KNEE", "x": 312, "y": 480, "score": 0.93 },
+    ...
+  ],
+  "pose_class": "warrior_one",
+  "confidence": 0.87,
+  "angles": { "left_knee": 68.4, "right_hip": 172.1 },
+  "feedback": [
+    {
+      "joint": "left_knee",
+      "current_angle": 68.4,
+      "target_angle": 90.0,
+      "delta": 21.6,
+      "feedback": "Adjust your left knee by 22° more"
+    }
+  ]
+}
+```
+
+---
+
+## Adding More Poses
+
+1. Add images to `datasets/images/train/<pose_name>/` and `test/<pose_name>/`
+2. Run [scripts/preprocess.py](file:///d:/Python_Projects/yoga-backend/scripts/preprocess.py) → [scripts/train.py](file:///d:/Python_Projects/yoga-backend/scripts/train.py) again
+3. Add reference angles for the new pose in [app/data/pose_references.json](file:///d:/Python_Projects/yoga-backend/app/data/pose_references.json)

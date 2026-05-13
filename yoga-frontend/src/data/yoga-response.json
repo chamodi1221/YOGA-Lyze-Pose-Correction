@@ -1,0 +1,119 @@
+{
+  "keypoints": [
+    {
+      "body_part": "NOSE",
+      "x": 280,
+      "y": 586,
+      "score": 0.5469970703125
+    },
+    {
+      "body_part": "LEFT_EYE",
+      "x": 261,
+      "y": 591,
+      "score": 0.6900858879089355
+    },
+    {
+      "body_part": "RIGHT_EYE",
+      "x": 259,
+      "y": 595,
+      "score": 0.6096451282501221
+    },
+    {
+      "body_part": "LEFT_EAR",
+      "x": 256,
+      "y": 631,
+      "score": 0.6544532775878906
+    },
+    {
+      "body_part": "RIGHT_EAR",
+      "x": 252,
+      "y": 640,
+      "score": 0.6459125280380249
+    },
+    {
+      "body_part": "LEFT_SHOULDER",
+      "x": 334,
+      "y": 638,
+      "score": 0.6201701164245605
+    },
+    {
+      "body_part": "RIGHT_SHOULDER",
+      "x": 320,
+      "y": 662,
+      "score": 0.7251923680305481
+    },
+    {
+      "body_part": "LEFT_ELBOW",
+      "x": 447,
+      "y": 639,
+      "score": 0.6299874186515808
+    },
+    {
+      "body_part": "RIGHT_ELBOW",
+      "x": 435,
+      "y": 689,
+      "score": 0.9037862420082092
+    },
+    {
+      "body_part": "LEFT_WRIST",
+      "x": 416,
+      "y": 586,
+      "score": 0.6065071225166321
+    },
+    {
+      "body_part": "RIGHT_WRIST",
+      "x": 408,
+      "y": 593,
+      "score": 0.7122073769569397
+    },
+    {
+      "body_part": "LEFT_HIP",
+      "x": 372,
+      "y": 454,
+      "score": 0.7165032625198364
+    },
+    {
+      "body_part": "RIGHT_HIP",
+      "x": 360,
+      "y": 460,
+      "score": 0.5548855066299438
+    },
+    {
+      "body_part": "LEFT_KNEE",
+      "x": 331,
+      "y": 263,
+      "score": 0.7824300527572632
+    },
+    {
+      "body_part": "RIGHT_KNEE",
+      "x": 321,
+      "y": 269,
+      "score": 0.6246601343154907
+    },
+    {
+      "body_part": "LEFT_ANKLE",
+      "x": 309,
+      "y": 107,
+      "score": 0.7764542698860168
+    },
+    {
+      "body_part": "RIGHT_ANKLE",
+      "x": 305,
+      "y": 105,
+      "score": 0.7549850940704346
+    }
+  ],
+  "pose_class": "shoudler_stand",
+  "confidence": 0.9999995231628418,
+  "angles": {
+    "left_elbow": 59.16936407653525,
+    "right_elbow": 61.07861529264902,
+    "left_shoulder": 78.83825506054583,
+    "right_shoulder": 92.01194909045081,
+    "left_hip": 156.21598419717319,
+    "right_hip": 157.2587044655062,
+    "left_knee": 175.9119957079741,
+    "right_knee": 174.03170005735444
+  },
+  "feedback": []
+}
